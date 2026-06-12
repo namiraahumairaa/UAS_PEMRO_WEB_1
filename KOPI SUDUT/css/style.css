@@ -1,0 +1,163 @@
+:root {
+    --ks-coffee-dark: #4a3728;
+    --ks-caramel: #b07d62;
+    --ks-cream: #fceddb;
+    --ks-light-brown: #d4a373;
+    --ks-white: #ffffff;
+    --ks-danger: #dc3545;
+    --ks-success: #198754;
+}
+body {
+    background-color: var(--ks-cream);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--ks-coffee-dark);
+}
+.navbar {
+    background-color: var(--ks-coffee-dark) !important;
+    border-bottom: 3px solid var(--ks-light-brown);
+}
+.navbar-brand {
+    color: var(--ks-white) !important;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.nav-link {
+    color: rgba(252, 237, 219, 0.8) !important;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+.nav-link:hover, .nav-link.active {
+    color: var(--ks-light-brown) !important;
+}
+.section-header h2 {
+    color: var(--ks-coffee-dark);
+    border-bottom: 2px solid var(--ks-caramel) !important;
+}
+.card {
+    border: 1px solid rgba(176, 125, 98, 0.2) !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    background-color: var(--ks-white);
+    box-shadow: 0 4px 12px rgba(74, 55, 40, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(74, 55, 40, 0.15);
+}
+.card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+.price {
+    color: var(--ks-caramel);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+.btn-primary {
+    background-color: var(--ks-light-brown) !important;
+    border-color: var(--ks-light-brown) !important;
+    color: var(--ks-coffee-dark) !important;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: var(--ks-caramel) !important;
+    border-color: var(--ks-caramel) !important;
+    color: var(--ks-white) !important;
+}
+.btn-warning {
+    background-color: var(--ks-light-brown) !important;
+    border-color: var(--ks-light-brown) !important;
+    color: var(--ks-coffee-dark) !important;
+}
+.qty-stepper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    width: fit-content;
+    overflow: hidden;
+    background-color: var(--ks-white);
+}
+.qty-stepper button {
+    background-color: #f8f9fa;
+    border: none;
+    width: 32px;
+    height: 36px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.qty-stepper button:hover {
+    background-color: #e9ecef;
+}
+.qty-stepper input {
+    width: 45px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ced4da;
+    border-right: 1px solid #ced4da;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.btn-remove {
+    background-color: var(--ks-danger);
+    color: var(--ks-white);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.btn-remove:hover {
+    background-color: #b52a37;
+}
+.stepper-status {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 30px 0;
+}
+.stepper-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+.step-counter {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    font-weight: bold;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--ks-white);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.stepper-item.active .step-counter {
+    background-color: var(--ks-caramel);
+    color: var(--ks-white);
+}
+.stepper-item.completed .step-counter {
+    background-color: var(--ks-success);
+    color: var(--ks-white);
+}
+.status-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+}
+.stepper-item.active .status-label {
+    color: var(--ks-caramel);
+}
+.stepper-item.completed .status-label {
+    color: var(--ks-success);
+}

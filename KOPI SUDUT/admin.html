@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOPI SUDUT - Dashboard Kasir</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css?v=1.1">
+    <style>
+        .admin-box {
+            max-width: 650px;
+            margin: 50px auto;
+        }
+        .note-box {
+            background-color: var(--ks-cream);
+            border-left: 4px solid var(--ks-caramel);
+        }
+        .item-list {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <div class="card admin-box shadow-sm border-0">
+                    <div class="card-header py-3 text-center">
+                        <h2 class="h4 mb-0 fw-bold">👨‍🍳 Halaman Kasir (Admin)</h2>
+                    </div>
+                    <div class="card-body p-4 text-center" id="konten-pesanan">
+                        <p class="text-muted">Memeriksa pesanan masuk...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="custom-alert" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <p id="custom-alert-text" class="text-dark fw-bold mb-3"></p>
+                    <button type="button" id="btn-close-alert" class="btn btn-primary px-4 fw-bold" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var alertModal = new bootstrap.Modal(document.getElementById('custom-alert'));
+            
+            function tampilAlert(teks) {
+                $("#custom-alert-text").text(teks);
+                alertModal.show();
+            }
+
+            function cekPesananMasuk() {
+                $.ajax({
+                    url: "baca_status.php",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(nota) {
+                        if (nota.status_respons === "sukses") {
+                            var teksCatatan = nota.catatanPesanan ? nota.catatanPesanan : "<i>Tidak ada catatan.</i>";
+                            var statusKini = nota.status_pesanan.toLowerCase().trim();
+                            var htmlMenu = "<div class='item-list border rounded p-3 text-start mb-3'><strong>Daftar Menu:</strong><ul class='mb-0 ps-3'>";
+                            if(nota.itemDibelanja && nota.itemDibelanja.length > 0) {
+                                nota.itemDibelanja.forEach(function(produk) {
+                                    htmlMenu += "<li>" + produk.nama + " <span class='badge bg-secondary ms-1'>x" + produk.qty + "</span></li>";
+                                });
+                            } else {
+                                htmlMenu += "<li>Menu Pilihan</li>";
+                            }
+                            htmlMenu += "</ul></div>";
+
+                            window.idPesananAktif = nota.idPesanan;
+
+                            if (statusKini === "pending") {
+                                $("#konten-pesanan").html(
+                                    "<h3 class='h5 fw-bold mb-3 text-dark'>Pesanan Baru Meja " + nota.meja + ": <span class='text-primary'>" + nota.nama_pelanggan + "</span></h3>" +
+                                    htmlMenu +
+                                    "<div class='note-box rounded p-3 text-start mb-3'><b>Catatan:</b> " + teksCatatan + "</div>" +
+                                    "<p class='mb-4 text-danger fw-bold'>Status: Menunggu Validasi</p>" +
+                                    "<button type='button' class='btn btn-primary btn-lg w-100 fw-bold' id='btn-masak'>👨‍🍳 Pesanan Mulai Diproses</button>"
+                                );
+                            } 
+                            else if (statusKini === "diproses") {
+                                $("#konten-pesanan").html(
+                                    "<h3 class='h5 fw-bold mb-3 text-dark'>Sedang Memasak Pemesanan Meja " + nota.meja + " (" + nota.nama_pelanggan + ")</h3>" +
+                                    htmlMenu +
+                                    "<div class='note-box rounded p-3 text-start mb-3'><b>Catatan:</b> " + teksCatatan + "</div>" +
+                                    "<p class='mb-4 text-warning fw-bold'>Status: Sedang Disiapkan</p>" +
+                                    "<button type='button' class='btn btn-success btn-lg w-100 fw-bold' id='btn-selesai'>✅ Siap Diambil</button>"
+                                );
+                            } 
+                            else if (statusKini === "siap") {
+                                $("#konten-pesanan").html(
+                                    "<h3 class='h5 fw-bold mb-3 text-dark'>Pesanan Meja " + nota.meja + " (" + nota.nama_pelanggan + ") Selesai!</h3>" +
+                                    "<p class='text-success fw-bold my-4'>Menunggu pesanan lain... ☕</p>" +
+                                    "<button type='button' class='btn btn-secondary btn-md px-4 fw-bold' id='btn-reset'>Bersihkan Layar Antrean</button>"
+                                );
+                            }
+                        } else {
+                            $("#konten-pesanan").html("<p class='text-muted py-4 fw-bold'>Belum ada pesanan baru dari pelanggan.</p>");
+                        }
+                    },
+                    error: function() {
+                        $("#konten-pesanan").html("<p class='text-danger py-4 fw-bold'>Gagal terhubung ke server.</p>");
+                    }
+                });
+            }
+
+            cekPesananMasuk();
+            setInterval(cekPesananMasuk, 2000);
+
+            $(document).on("click", "#btn-masak", function() {
+                if (window.idPesananAktif) {
+                    $.ajax({
+                        url: "ubah_status.php",
+                        type: "POST",
+                        data: {
+                            id_pesanan: window.idPesananAktif,
+                            status_baru: "diproses"
+                        },
+                        dataType: "json",
+                        success: function(respon) {
+                            if(respon.status === "sukses") {
+                                tampilAlert("Pesanan berhasil diproses.");
+                                cekPesananMasuk();
+                            }
+                        }
+                    });
+                }
+            });
+
+            $(document).on("click", "#btn-selesai", function() {
+                if (window.idPesananAktif) {
+                    $.ajax({
+                        url: "ubah_status.php",
+                        type: "POST",
+                        data: {
+                            id_pesanan: window.idPesananAktif,
+                            status_baru: "siap"
+                        },
+                        dataType: "json",
+                        success: function(respon) {
+                            if(respon.status === "sukses") {
+                                tampilAlert("Status pesanan berhasil diubah ke Siap Diambil.");
+                                cekPesananMasuk();
+                            }
+                        }
+                    });
+                }
+            });
+
+            $(document).on("click", "#btn-reset", function() {
+                tampilAlert("Layar antrean kasir berhasil dibersihkan!");
+                cekPesananMasuk();
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOPI SUDUT - Keranjang Pesanan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css?v=1.1">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">☕ KOPI SUDUT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav me-auto">
+                    <a class="nav-link" href="index.html#coffee">Coffee</a>
+                    <a class="nav-link" href="index.html#Non Coffee">Non Coffee</a>
+                    <a class="nav-link" href="index.html#breakfast">Breakfast</a>
+                    <a class="nav-link" href="index.html#lunch">Lunch</a>
+                    <a class="nav-link" href="index.html#dessert">Dessert & Snack</a>
+                </div>
+                <div class="navbar-nav gap-2 mt-2 mt-lg-0">
+                    <a href="status.html" class="btn btn-outline-light">Status Pesanan</a>
+                    <a href="cart.html" class="btn btn-warning position-relative d-flex align-items-center fw-bold">
+                        🛒 Keranjang
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 p-4">
+                    <h3 class="fw-bold mb-4">Keranjang Pesanan Anda</h3>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Harga</th>
+                                    <th class="text-center">Jumlah</th>
+                                    <th>Subtotal</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempat-data-keranjang"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 p-4">
+                    <h4 class="fw-bold mb-3">Ringkasan Pesanan</h4>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fs-5 text-muted">Total Pembayaran</span>
+                        <span class="fs-4 fw-bold text-primary" id="total-Pesananan">Rp 0</span>
+                    </div>
+                    <div class="d-grid">
+                        <a href="checkout.html" class="btn btn-primary btn-lg fw-bold">Lanjut ke Pembayaran</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        function tampilkanData() {
+            var dataLokal = localStorage.getItem("cartKS");
+            var tempatTabel = document.getElementById("tempat-data-keranjang");
+            var tempatTotal = document.getElementById("total-Pesananan");
+            
+            var barisHtml = "";
+            var totalHarga = 0;
+
+            if (dataLokal === null || JSON.parse(dataLokal).length === 0) {
+                tempatTabel.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">Keranjang Pesanan Anda kosong!</td></tr>';
+                tempatTotal.innerText = "Rp 0";
+                return;
+            }
+
+            var listPesanan = JSON.parse(dataLokal);
+
+            listPesanan.forEach(function(barang, urutan) {
+                var namaTampil = barang.nama ? barang.nama : "Menu Kopi Pilihan";
+                var hargaTampil = barang.harga ? barang.harga : 20000; 
+                
+                var subtotal = hargaTampil * barang.qty;
+                totalHarga += subtotal;
+
+                barisHtml += '<tr>' +
+                    '<td><span class="fw-bold text-dark">' + namaTampil + '</span></td>' +
+                    '<td class="text-secondary">Rp ' + hargaTampil.toLocaleString('id-ID') + '</td>' +
+                    '<td>' +
+                        '<div class="qty-stepper mx-auto">' +
+                            '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="ubahJumlah(' + urutan + ', -1)">-</button>' +
+                            '<input type="number" value="' + barang.qty + '" readonly class="form-control form-control-sm text-center border-0 fw-bold" style="width: 45px;">' +
+                            '<button type="button" class="btn btn-sm btn-outline-secondary" onclick="ubahJumlah(' + urutan + ', 1)">+</button>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td class="fw-bold text-dark">Rp ' + subtotal.toLocaleString('id-ID') + '</td>' +
+                    '<td class="text-center"><button type="button" class="btn btn-remove btn-sm btn-danger fw-bold" onclick="hapusItem(' + urutan + ')">Hapus</button></td>' +
+                '</tr>';
+            });
+
+            tempatTabel.innerHTML = barisHtml;
+            tempatTotal.innerText = "Rp " + totalHarga.toLocaleString('id-ID');
+        }
+
+        function ubahJumlah(index, perubahan) {
+            var data = JSON.parse(localStorage.getItem("cartKS"));
+            var qtyBaru = data[index].qty + perubahan;
+            if (qtyBaru < 1) qtyBaru = 1;
+
+            data[index].qty = qtyBaru;
+            localStorage.setItem("cartKS", JSON.stringify(data));
+            tampilkanData();
+
+            var dataKirim = {
+                nama_produk: data[index].nama,
+                jumlah_baru: qtyBaru
+            };
+
+            $.ajax({
+                url: "ubah_keranjang.php",
+                type: "POST",
+                data: dataKirim,
+                dataType: "json"
+            });
+        }
+
+        function hapusItem(index) {
+            var data = JSON.parse(localStorage.getItem("cartKS"));
+            var dataKirim = {
+                nama_produk: data[index].nama
+            };
+
+            data.splice(index, 1);
+            localStorage.setItem("cartKS", JSON.stringify(data));
+            tampilkanData();
+
+            $.ajax({
+                url: "hapus_keranjang.php",
+                type: "POST",
+                data: dataKirim,
+                dataType: "json"
+            });
+        }
+
+        $(document).ready(function() {
+            tampilkanData();
+        });
+    </script>
+</body>
+</html>

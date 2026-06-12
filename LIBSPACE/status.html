@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Reservasi - Libspace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">🏢 LIBSPACE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="index.html">Beranda</a>
+                    <a class="nav-link" href="reservasi.html">Reservasi</a>
+                    <a class="nav-link active fw-bold" href="status.html">Status</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4 flex-grow-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div id="status-kosong" class="card p-5 text-center shadow-sm">
+                    <p class="text-muted fw-bold mb-0">Belum ada reservasi tempat LIBSPACE pada saat ini.</p>
+                </div>
+
+                <div id="status-aktif" class="card p-4 shadow-sm d-none">
+                    <h4 id="sapaan" class="fw-bold text-primary mb-3"></h4>
+                    <div class="alert alert-info py-3 mb-4 fw-bold" id="info-status"></div>
+
+                    <div class="stepper-status d-flex justify-content-between mb-4">
+                        <div id="st-pending" class="step text-center flex-fill">
+                            <div class="step-counter mx-auto">1</div>
+                            <span class="small fw-bold">Belum Digunakan</span>
+                        </div>
+                        <div id="st-proses" class="step text-center flex-fill">
+                            <div class="step-counter mx-auto">2</div>
+                            <span class="small fw-bold">Sedang Digunakan</span>
+                        </div>
+                        <div id="st-siap" class="step text-center flex-fill">
+                            <div class="step-counter mx-auto">3</div>
+                            <span class="small fw-bold">Selesai Digunakan</span>
+                        </div>
+                    </div>
+
+                    <div class="border rounded p-4 text-start mb-2" style="background-color: rgba(249, 242, 231, 0.5); border-color: #e0c07a !important;">
+                        <h6 class="border-bottom pb-2 fw-bold text-primary mb-3" style="border-color: #e0c07a !important;">Detail Reservasi Fasilitas</h6>
+                        <p id="st-nama" class="mb-2 text-secondary"></p>
+                        <p id="st-nim" class="mb-2 text-secondary"></p>
+                        <p id="st-tanggal" class="mb-2 text-secondary"></p>
+                        <p id="st-layanan" class="mb-2 text-secondary"></p>
+                        <p id="st-detail" class="mb-0 text-secondary"></p>
+
+                        <div class="mt-4 border-top pt-3" style="border-color: #e0c07a !important;">
+                            <h6 class="fw-bold text-primary mb-3">Konfirmasi Kehadiran Anda:</h6>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button id="btn-status-pending" class="btn btn-outline-primary flex-fill fw-bold">Belum Digunakan</button>
+                                <button id="btn-status-proses" class="btn btn-warning flex-fill fw-bold">Sedang Digunakan</button>
+                                <button id="btn-status-selesai" class="btn btn-success flex-fill fw-bold">Selesai Digunakan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-auto py-4 text-center border-top bg-white" style="border-top: 3px solid #e0c07a !important; background-color: #f9f2e7 !important;">
+        <div class="container">
+            <p class="mb-1 fw-bold text-primary">© 2026 LIBSPACE - Perpustakaan Universitas</p>
+            <p class="small text-muted">Sistem Manajemen Fasilitas Digital untuk Produktivitas Akademik</p>
+            <div class="mt-2">
+                <a href="https://digilib.ulm.ac.id/archive/" target="_blank" class="text-decoration-none text-secondary fw-bold mx-2">Situs Perpustakaan</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
